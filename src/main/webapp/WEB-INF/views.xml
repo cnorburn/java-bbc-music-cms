@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation= "http://www.springframework.org/schema/beans
+                         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                         http://www.springframework.org/schema/util
+                         http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+
+    <bean name="jsonView" class="org.springframework.web.servlet.view.json.JsonView">
+    	<property name="jsonWriter"><ref bean="jsonlibJsonWriter"/></property>
+         <property name="jsonViewCallback">
+                <ref bean="jsonViewCallback" />
+        </property>
+    </bean>
+    
+    <bean name="jsonViewCallback" class="org.springframework.web.servlet.view.json.error.StandartErrorConverter">
+        <property name="hasGlobalErrorsKey"> <value>hasGlobals</value> </property>
+        <property name="globalErrorsKey"> <value>globals</value> </property>
+        <property name="hasFieldErrorsKey"> <value>hasField</value> </property>
+        <property name="fieldErrorsKey"> <value>field</value> </property>
+        <property name="modelCleanUpMode"> <value>REMOVE_COMMAND_BEAN</value> </property>
+    </bean>
+    
+    
+    <bean name="sojoJsonWriter" class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
+        <property name="enableJsonConfigSupport"><value>true</value></property>
+        <property name="keepValueTypesMode"><value>ALL</value></property>
+    </bean>
+    
+    <bean name="jsonlibJsonWriter" class="org.springframework.web.servlet.view.json.writer.jsonlib.JsonlibJsonStringWriter">
+    	<property name="enableJsonConfigSupport"><value>true</value></property>
+    </bean>
+
+</beans>

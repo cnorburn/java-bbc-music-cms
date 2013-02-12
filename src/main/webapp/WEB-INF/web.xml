@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee:security-role-ref http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID" version="2.5">
+
+    <display-name>music</display-name>
+
+     <!-- root of classpath for log4j.properties -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+        <!--<param-value>classpath:log4j.hibernate.properties</param-value> -->
+    </context-param>
+
+ 
+    <!--
+        The log4j environmental listener uses org.springframework.web.util.Log4jWebConfigurer 
+        so the webAppRootKey needs to be set: Easiest thing to set this to is the same as the 
+        webapp name, as this has to be unique anyway.
+    --> 
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>music</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>propertiesConfigLocation</param-name>
+        <param-value>classpath:propertiesConfigContext.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>bbc.forge.log.EnvironmentalPropertiesLog4jContextListener</listener-class>
+    </listener>
+
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+
+    <servlet>
+        <servlet-name>root</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:applicationContext.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>root</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+</web-app>

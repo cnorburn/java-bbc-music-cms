@@ -1,0 +1,14 @@
+{
+    "user" : {
+            "bbcid": "1234567890",
+            "artist-gid": "xxx-123-yyyyy-4567",
+            "featured_position": "1",
+            "status": "0",
+            "is_superuser": "1",
+            "is_guide": "1",
+            "username": "johnpeel",
+            "name": "John Peel",
+            "short_synopsis": "A feature of Peels BBC Radio 1 shows were the famous John Peel Sessions",
+            "medium_synopsis": "The BBC employed its own house bands and orchestras and it also engaged outside bands to record exclusive tracks for its programmes in BBC studios. This was the reason why Peel was able to use session men in his own programmes. Sessions were usually four tracks recorded and mixed in a single day; as such they often had a rough and ready, demo-like feel, somewhere between a live performance and a finished recording." 
+    } 
+}

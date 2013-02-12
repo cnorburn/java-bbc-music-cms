@@ -1,0 +1,32 @@
+--Replace the url keys with actuals from the db
+
+--Users
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/user.insert' -X POST http://pal.sandbox.dev.bbc.co.uk:8080/music/users
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/user.update' http://pal.sandbox.dev.bbc.co.uk:8080/music/users/johnpeel
+curl -X DELETE http://pal.sandbox.dev.bbc.co.uk:8080/music/users/johnpeel
+
+--Collections
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/collection.insert' -X POST http://pal.sandbox.dev.bbc.co.uk:8080/music/users/johnpeel/collections
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/collection.update' http://pal.sandbox.dev.bbc.co.uk:8080/music/collections/w3vj3
+curl -X DELETE http://pal.sandbox.dev.bbc.co.uk:8080/music/collections/nwrn6
+
+--Playlists
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/playlist.insert' -X POST http://pal.sandbox.dev.bbc.co.uk:8080/music/users/johnpeel/playlists
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/playlist.update' http://pal.sandbox.dev.bbc.co.uk:8080/music/playlists/92r95
+curl -X DELETE http://pal.sandbox.dev.bbc.co.uk:8080/music/playlists/68fnj
+
+--Tracks
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/tracks.insert' -X POST http://pal.sandbox.dev.bbc.co.uk:8080/music/playlists/92r95/tracks
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/tracks.update' http://pal.sandbox.dev.bbc.co.uk:8080/music/playlists/92r95/tracks/dqx49
+curl -X DELETE http://pal.sandbox.dev.bbc.co.uk:8080/music/playlists/v2x9b/tracks/x49vd
+
+--Clips
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/clips.insert' -X POST http://pal.sandbox.dev.bbc.co.uk:8080/music/collections/w3vj3/clips
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/clips.update' http://pal.sandbox.dev.bbc.co.uk:8080/music/clips/b999999
+curl -X DELETE http://pal.sandbox.dev.bbc.co.uk:8080/music/clips/b999999
+
+
+
+curl -H 'Content-Type: application/json' -T 'src/main/resources/json/user.insert' -X POST https://api.int.bbc.co.uk/music/users/
+
+

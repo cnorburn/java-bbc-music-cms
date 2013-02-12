@@ -1,0 +1,169 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-2.0.1.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+     
+    <bean id="propertyConfigurer" class="bbc.forge.config.PropertiesMuncherPlaceholderConfigurer" />
+ <bean id="propertiesMuncher" class="bbc.forge.config.PropertiesMuncherPlaceholderConfigurer">
+    <property name="trim" value="true"/>
+  </bean>
+
+ 	<import resource="classpath*:/bbc/forge/datasource/bbc-forge-readaware-datasource-config.xml" />
+
+	<context:annotation-config />
+	<context:component-scan base-package="bbc.forge.music" />
+  	
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="databaseMonitoringHandlerInterceptor"/>
+				<ref bean="openSessionInViewInterceptor"/>
+			</list>
+		</property>
+	</bean>
+  
+  	<bean name="databaseMonitoringHandlerInterceptor" 
+		class="bbc.forge.music.monitoring.DatabaseMonitoringHandlerInterceptor" />
+  
+ 	<!-- This is so important. Without it the db locks. -->
+ 	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="flushMode" value="1"/>
+	</bean>
+ 
+     <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+		<property name="locateExistingServerIfPossible" value="true" />
+	</bean>
+	
+	<bean id="mbeanExporter" class="org.springframework.jmx.export.annotation.AnnotationMBeanExporter">
+		<property name="server" ref="mbeanServer" />
+        <property name="defaultDomain" value="bbc.forge.jmx" />
+    </bean>
+ 
+    <bean id="dataSource" class="bbc.forge.datasource.MySqlDataSourceFactoryBean">
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+	</bean>
+	
+  
+   	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
+		<property name="entityInterceptor">
+    		<bean class="bbc.forge.music.audit.AuditTrailInterceptor"/>
+	  	</property>
+		<property name="dataSource">
+		 	<ref bean="dataSource" />
+		 </property>
+		<property name="annotatedClasses">
+		  <list>
+		    <value>bbc.forge.music.model.Playlists</value>
+		    <value>bbc.forge.music.model.PlaylistsTracks</value>
+		    <value>bbc.forge.music.model.Tracks</value>
+		    <value>bbc.forge.music.model.Brands</value>
+		    <value>bbc.forge.music.model.UserBrands</value>
+		    <value>bbc.forge.music.model.BrandsDisplay</value>
+		    <value>bbc.forge.music.model.PlaylistUpdated</value>
+		    <value>bbc.forge.music.model.CollectionUpdated</value>
+		    <value>bbc.forge.music.model.BrandsUsers</value>
+		    <value>bbc.forge.music.model.Collections</value>
+		    <value>bbc.forge.music.model.Clips</value>
+		    <value>bbc.forge.music.model.Externals</value>
+		    <value>bbc.forge.music.model.ExternalsPlaylists</value>
+		    <value>bbc.forge.music.model.UrlKeys</value>
+		    <value>bbc.forge.music.model.Users</value>
+		    <value>bbc.forge.music.model.UserCollections</value>
+		    <value>bbc.forge.music.model.UserPlaylists</value>
+		    <value>bbc.forge.music.model.Username</value>
+		    <value>bbc.forge.music.model.CollectionArtists</value>
+
+			<value>bbc.forge.music.model.UrlKeys</value>
+			<value>bbc.forge.music.model.Guides</value>
+			<value>bbc.forge.music.model.UserBrands</value>
+		    <value>bbc.forge.music.model.BrandsDisplay</value>
+		    <value>bbc.forge.music.model.TracksPlaylist</value>
+	
+		    <value>bbc.forge.music.model.BrandUser</value>
+		  </list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+    
+  <!-- THE HIBERNATE INTERCEPTOR -->
+	<bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+        
+    <bean id="databaseMonitoring" class="bbc.forge.music.monitoring.DatabaseMonitoring" />
+	<bean id="databaseExceptionResolver" class="bbc.forge.music.monitoring.DatabaseExceptionResolver" />
+        
+ 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="mediaTypes">
+			<map>
+                 <entry key="json" value="application/json"/>
+  			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+                <bean id="jsonViews" class="org.springframework.web.servlet.view.XmlViewResolver">
+                    <property name="location" value="/WEB-INF/views.xml" />
+                </bean>
+            </list>
+		</property>
+	</bean>
+  
+ 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+     
+   	<bean id="usersDao" class="bbc.forge.music.dao.HibernateUsersDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="collectionsDao" class="bbc.forge.music.dao.HibernateCollectionsDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="clipsDao" class="bbc.forge.music.dao.HibernateClipsDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="playlistsDao" class="bbc.forge.music.dao.HibernatePlaylistsDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="playlistsTracksDao" class="bbc.forge.music.dao.HibernatePlaylistsTracksDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="tracksDao" class="bbc.forge.music.dao.HibernateTracksDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+   	<bean id="urlKeysDao" class="bbc.forge.music.dao.HibernateUrlKeysDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+</beans>
